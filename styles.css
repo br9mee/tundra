@@ -110,7 +110,10 @@ h1, h2, h3 { font-family: 'Cinzel', Georgia, serif; line-height: 1.2; }
   justify-content: center;
   padding-top: var(--nav-h);
   padding-inline: 2rem;
-  background: var(--bg);
+  background:
+    linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.78) 100%),
+    url('https://images.unsplash.com/photo-1548610762-b7c48bd48e73?auto=format&fit=crop&w=1920&q=80')
+    center / cover no-repeat;
   text-align: center;
   overflow: hidden;
 }
@@ -249,6 +252,28 @@ a:has(.guild-emblem):hover .guild-emblem {
   color: var(--muted);
   margin-bottom: 2.5rem;
 }
+
+/* ── Links section feasting hall reveal ─────────────── */
+#links {
+  position: relative;
+}
+
+#links::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.72)),
+    url('https://images.unsplash.com/photo-1533154683836-84ea7a0bc310?auto=format&fit=crop&w=1920&q=80')
+    center / cover no-repeat;
+  opacity: 0;
+  transition: opacity 1.4s ease;
+  z-index: 0;
+}
+
+#links.revealed::before { opacity: 1; }
+
+#links .container { position: relative; z-index: 1; }
 
 /* ── Link Cards ──────────────────────────────────────── */
 .links__grid {

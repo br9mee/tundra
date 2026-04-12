@@ -32,7 +32,7 @@
       <p class="hero__faction">A WoW Classic Epoch Guild at Kezan</p>
       <h1 class="hero__title">Tundra</h1>
       <p class="hero__sub">Forged in the cold north. Built to last.</p>
-      <a href="#links" class="btn">Enter the Hall</a>
+      <a href="#links" class="btn" id="enter-btn">Enter the Hall</a>
     </div>
   </section>
 
@@ -90,6 +90,9 @@
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('enter-btn').addEventListener('click', function() {
+      document.getElementById('links').classList.add('revealed');
+    });
   </script>
 
 </body>
