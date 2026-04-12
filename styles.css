@@ -163,6 +163,15 @@ h1, h2, h3 { font-family: 'Cinzel', Georgia, serif; line-height: 1.2; }
     0 0 40px rgba(176,221,230,0.25),
     0 0 80px rgba(176,221,230,0.1);
   object-fit: cover;
+  transition: box-shadow var(--t), transform var(--t);
+}
+
+a:has(.guild-emblem):hover .guild-emblem {
+  box-shadow:
+    0 0 0 6px rgba(176,221,230,0.12),
+    0 0 55px rgba(176,221,230,0.4),
+    0 0 100px rgba(176,221,230,0.15);
+  transform: scale(1.04);
 }
 
 .hero__faction {
