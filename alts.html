@@ -550,7 +550,14 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    const { createClient } = supabase;
+    const sb = createClient(
+      'https://gwfqexifxugmdpbftxrd.supabase.co',
+      'sb_publishable_6aBcoc03EdxJxjSXgX_VFA_uJWHUx8k'
+    );
+
     const SPECS = {
       'Death Knight':  ['Blood', 'Frost', 'Unholy'],
       'Druid':         ['Balance', 'Feral', 'Restoration'],
@@ -585,13 +592,26 @@
 
     const ROLE_LABEL = { tank: 'Tank', healer: 'Healer', dps: 'DPS' };
 
-    let data = JSON.parse(localStorage.getItem('tundra-alts') || '[]');
+    let data = [];
     let currentSort = 'main';
     let sortAsc = true;
     let modalMode = 'member';
 
-    function save() {
-      localStorage.setItem('tundra-alts', JSON.stringify(data));
+    async function loadData() {
+      const { data: rows, error } = await sb
+        .from('tundra_members')
+        .select('*')
+        .order('created_at', { ascending: true });
+      if (error) { console.error(error); return; }
+      data = rows.map(r => ({
+        id: r.id,
+        name: r.name,
+        class: r.class,
+        spec: r.spec,
+        role: r.role,
+        mainId: r.main_id,
+      }));
+      renderRows();
     }
 
     function getMainName(id) {
@@ -738,24 +758,26 @@
       });
     }
 
-    function submitForm(e) {
+    async function submitForm(e) {
       e.preventDefault();
-      const name  = document.getElementById('char-name').value.trim();
-      const cls   = document.getElementById('char-class').value;
-      const spec  = document.getElementById('char-spec').value;
-      const role  = document.getElementById('char-role').value;
+      const name   = document.getElementById('char-name').value.trim();
+      const cls    = document.getElementById('char-class').value;
+      const spec   = document.getElementById('char-spec').value;
+      const role   = document.getElementById('char-role').value;
       const mainId = modalMode === 'alt' ? document.getElementById('main-select').value : null;
 
       if (!name || !cls || !role) return;
       if (modalMode === 'alt' && !mainId) return;
 
-      data.push({ id: crypto.randomUUID(), name, class: cls, spec, role, mainId: mainId || null });
-      save();
-      renderRows();
       closeModal();
+      const { error } = await sb.from('tundra_members').insert({
+        name, class: cls, spec, role, main_id: mainId || null
+      });
+      if (error) { alert('Failed to save: ' + error.message); return; }
+      await loadData();
     }
 
-    function deleteEntry(id) {
+    async function deleteEntry(id) {
       const entry = data.find(d => d.id === id);
       if (!entry) return;
       const isMain = !entry.mainId;
@@ -765,18 +787,17 @@
           ? `Remove ${entry.name} and their ${altCount} alt${altCount > 1 ? 's' : ''}?`
           : `Remove ${entry.name}?`;
         if (!confirm(msg)) return;
-        data = data.filter(d => d.id !== id && d.mainId !== id);
       } else {
         if (!confirm(`Remove ${entry.name}?`)) return;
-        data = data.filter(d => d.id !== id);
       }
-      save();
-      renderRows();
+      const { error } = await sb.from('tundra_members').delete().eq('id', id);
+      if (error) { alert('Failed to delete: ' + error.message); return; }
+      await loadData();
     }
 
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
     document.getElementById('year').textContent = new Date().getFullYear();
-    renderRows();
+    loadData();
   </script>
 
 </body>
