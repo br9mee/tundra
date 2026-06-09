@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tundra — Alts</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+
+    :root {
+      --blue:      #b0dde6;
+      --blue-lt:   #d4eef3;
+      --blue-mid:  #7ec4d0;
+      --blue-dk:   #4a9aaa;
+      --blue-dim:  rgba(176,221,230,0.12);
+      --bg:        #000000;
+      --bg-raised: #0a0c0d;
+      --bg-card:   #0d1214;
+      --text:      #ffffff;
+      --text-soft: rgba(255,255,255,0.75);
+      --muted:     rgba(176,221,230,0.45);
+      --border:    rgba(176,221,230,0.18);
+      --border-hover: rgba(176,221,230,0.55);
+      --nav-h:     60px;
+      --radius:    6px;
+      --t:         0.22s ease;
+
+      --dk:      #C41E3A;
+      --dh:      #A330C9;
+      --druid:   #FF7C0A;
+      --evoker:  #33937F;
+      --hunter:  #AAD372;
+      --mage:    #3FC7EB;
+      --monk:    #00FF98;
+      --paladin: #F48CBA;
+      --priest:  #ffffff;
+      --rogue:   #FFF468;
+      --shaman:  #0070DD;
+      --warlock: #8788EE;
+      --warrior: #C69B3A;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Crimson Text', Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100dvh;
+    }
+    h1, h2, h3 { font-family: 'Cinzel', Georgia, serif; line-height: 1.2; }
+
+    /* Nav */
+    .nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-inline: 2rem;
+      background: rgba(0,0,0,0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+    }
+    .nav__brand {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.15rem;
+      color: var(--blue);
+      letter-spacing: 0.1em;
+    }
+    .nav__sub {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-left: 0.6rem;
+    }
+    .nav__brand-wrap { display: flex; align-items: baseline; gap: 0; }
+    .nav__back {
+      font-family: 'Cinzel', serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color var(--t);
+    }
+    .nav__back:hover { color: var(--blue); }
+
+    /* Page */
+    .page {
+      padding-top: calc(var(--nav-h) + 3rem);
+      padding-bottom: 4rem;
+      padding-inline: 1.5rem;
+      max-width: 1200px;
+      margin-inline: auto;
+    }
+
+    .page__header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .page__title {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      color: var(--blue);
+      letter-spacing: 0.06em;
+    }
+    .page__desc {
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--muted);
+      margin-top: 0.3rem;
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .controls__label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-right: 0.25rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1.25rem;
+      background: transparent;
+      color: var(--blue);
+      font-family: 'Cinzel', serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border: 1px solid var(--blue-mid);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background var(--t), color var(--t), border-color var(--t), box-shadow var(--t);
+    }
+    .btn:hover {
+      background: var(--blue-dim);
+      border-color: var(--blue);
+      box-shadow: 0 0 18px rgba(176,221,230,0.2);
+      color: var(--blue-lt);
+    }
+    .btn--sm {
+      padding: 0.3rem 0.7rem;
+      font-size: 0.7rem;
+    }
+    .btn--danger {
+      color: rgba(220,80,80,0.8);
+      border-color: rgba(220,80,80,0.3);
+    }
+    .btn--danger:hover {
+      background: rgba(220,80,80,0.08);
+      border-color: rgba(220,80,80,0.7);
+      box-shadow: 0 0 12px rgba(220,80,80,0.15);
+      color: #e05050;
+    }
+
+    .sort-btn {
+      padding: 0.35rem 0.9rem;
+      background: transparent;
+      color: var(--muted);
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all var(--t);
+    }
+    .sort-btn:hover { color: var(--blue); border-color: var(--border-hover); }
+    .sort-btn.active { color: var(--blue); border-color: var(--blue-mid); background: var(--blue-dim); }
+    .sort-btn .arrow { font-size: 0.6rem; margin-left: 0.25rem; }
+
+    /* Table */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg-card);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.97rem;
+    }
+
+    thead tr {
+      border-bottom: 1px solid rgba(176,221,230,0.25);
+      background: rgba(176,221,230,0.04);
+    }
+
+    th {
+      font-family: 'Cinzel', serif;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0.85rem 1rem;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(176,221,230,0.08);
+      transition: background var(--t);
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(176,221,230,0.03); }
+
+    tbody tr.is-main {
+      background: rgba(176,221,230,0.05);
+      border-bottom: 1px solid rgba(176,221,230,0.15);
+    }
+    tbody tr.is-main:hover { background: rgba(176,221,230,0.08); }
+
+    tbody tr.is-alt td:first-child { padding-left: 2.5rem; }
+
+    td {
+      padding: 0.65rem 1rem;
+      color: var(--text-soft);
+      vertical-align: middle;
+    }
+
+    .char-name {
+      font-family: 'Cinzel', serif;
+      font-size: 0.88rem;
+      letter-spacing: 0.04em;
+      color: var(--text);
+    }
+    .is-main .char-name { color: var(--blue-lt); }
+
+    .main-badge {
+      font-family: 'Cinzel', serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--blue-dk);
+      border: 1px solid rgba(176,221,230,0.25);
+      border-radius: 3px;
+      padding: 0.1rem 0.4rem;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+
+    .alt-of {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+    .alt-arrow {
+      display: inline-block;
+      margin-right: 0.25rem;
+      color: rgba(176,221,230,0.3);
+    }
+
+    /* Class badge */
+    .class-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      padding: 0.2rem 0.6rem 0.2rem 0.35rem;
+      border-radius: 3px;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .class-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* Role icons */
+    .role {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.82rem;
+      color: var(--text-soft);
+    }
+    .role svg { width: 14px; height: 14px; }
+    .role--tank { color: #6bb3f5; }
+    .role--healer { color: #7de87d; }
+    .role--dps { color: #f57676; }
+
+    .actions { white-space: nowrap; }
+
+    /* Empty state */
+    .empty {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--muted);
+      font-style: italic;
+      font-size: 1.05rem;
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      background: var(--bg-raised);
+      border: 1px solid rgba(176,221,230,0.28);
+      border-radius: var(--radius);
+      padding: 2rem;
+      width: 100%;
+      max-width: 460px;
+      position: relative;
+    }
+    .modal__title {
+      font-size: 1.2rem;
+      color: var(--blue);
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.06em;
+    }
+    .modal__close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.2rem;
+      cursor: pointer;
+      line-height: 1;
+      transition: color var(--t);
+    }
+    .modal__close:hover { color: var(--text); }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-bottom: 1.1rem;
+    }
+    label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    input, select {
+      background: rgba(176,221,230,0.05);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.55rem 0.75rem;
+      color: var(--text);
+      font-family: 'Crimson Text', serif;
+      font-size: 1rem;
+      transition: border-color var(--t);
+      width: 100%;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--blue-mid);
+    }
+    select option { background: #0d1214; }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .modal__actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.88rem;
+      font-style: italic;
+      color: var(--muted);
+      margin-top: 3rem;
+    }
+
+    @media (max-width: 600px) {
+      .page__header { flex-direction: column; align-items: flex-start; }
+      .form-row { grid-template-columns: 1fr; }
+      th, td { padding: 0.55rem 0.65rem; }
+      tbody tr.is-alt td:first-child { padding-left: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav__brand-wrap">
+      <span class="nav__brand">Tundra</span>
+      <span class="nav__sub">/ Alts</span>
+    </div>
+    <a href="index.html" class="nav__back">← Guild Home</a>
+  </nav>
+
+  <div class="page">
+    <div class="page__header">
+      <div>
+        <h1 class="page__title">Alt Roster</h1>
+        <p class="page__desc">Track your alts and who they belong to.</p>
+      </div>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+        <button class="btn" onclick="openModal('member')">+ Add Member</button>
+        <button class="btn" onclick="openModal('alt')">+ Add Alt</button>
+      </div>
+    </div>
+
+    <div class="controls">
+      <span class="controls__label">Sort by</span>
+      <button class="sort-btn active" data-sort="main" onclick="setSort('main')">Main <span class="arrow">↑</span></button>
+      <button class="sort-btn" data-sort="class" onclick="setSort('class')">Class</button>
+      <button class="sort-btn" data-sort="spec" onclick="setSort('spec')">Spec</button>
+      <button class="sort-btn" data-sort="role" onclick="setSort('role')">Role</button>
+      <button class="sort-btn" data-sort="name" onclick="setSort('name')">Name</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Character</th>
+            <th>Alt of</th>
+            <th>Class</th>
+            <th>Spec</th>
+            <th>Role</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="roster-body">
+        </tbody>
+      </table>
+      <div id="empty-state" class="empty" style="display:none;">
+        No members yet. Add someone to get started.
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; <span id="year"></span> Tundra Guild. All rights reserved.</p>
+  </footer>
+
+  <!-- Modal -->
+  <div class="modal-backdrop" id="modal" onclick="closeModalOnBackdrop(event)">
+    <div class="modal">
+      <button class="modal__close" onclick="closeModal()">✕</button>
+      <h2 class="modal__title" id="modal-title">Add Member</h2>
+      <form id="modal-form" onsubmit="submitForm(event)">
+
+        <div id="main-select-group" class="form-group" style="display:none;">
+          <label for="main-select">Main Character</label>
+          <select id="main-select" required>
+            <option value="">— Select main —</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="char-name">Character Name</label>
+          <input type="text" id="char-name" placeholder="e.g. Frostmourne" required autocomplete="off" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="char-class">Class</label>
+            <select id="char-class" required onchange="updateSpecOptions()">
+              <option value="">— Class —</option>
+              <option value="Death Knight">Death Knight</option>
+              <option value="Druid">Druid</option>
+              <option value="Hunter">Hunter</option>
+              <option value="Mage">Mage</option>
+              <option value="Paladin">Paladin</option>
+              <option value="Priest">Priest</option>
+              <option value="Rogue">Rogue</option>
+              <option value="Shaman">Shaman</option>
+              <option value="Warlock">Warlock</option>
+              <option value="Warrior">Warrior</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="char-spec">Spec</label>
+            <select id="char-spec" required>
+              <option value="">— Spec —</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="char-role">Role</label>
+          <select id="char-role" required>
+            <option value="">— Role —</option>
+            <option value="tank">Tank</option>
+            <option value="healer">Healer</option>
+            <option value="dps">DPS</option>
+          </select>
+        </div>
+
+        <div class="modal__actions">
+          <button type="button" class="btn btn--sm" onclick="closeModal()" style="border-color:var(--border);color:var(--muted);">Cancel</button>
+          <button type="submit" class="btn btn--sm">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const SPECS = {
+      'Death Knight':  ['Blood', 'Frost', 'Unholy'],
+      'Druid':         ['Balance', 'Feral', 'Restoration'],
+      'Hunter':        ['Beast Mastery', 'Marksmanship', 'Survival'],
+      'Mage':          ['Arcane', 'Fire', 'Frost'],
+      'Paladin':       ['Holy', 'Protection', 'Retribution'],
+      'Priest':        ['Discipline', 'Holy', 'Shadow'],
+      'Rogue':         ['Assassination', 'Combat', 'Subtlety'],
+      'Shaman':        ['Elemental', 'Enhancement', 'Restoration'],
+      'Warlock':       ['Affliction', 'Demonology', 'Destruction'],
+      'Warrior':       ['Arms', 'Fury', 'Protection'],
+    };
+
+    const CLASS_COLORS = {
+      'Death Knight': '#C41E3A',
+      'Druid':        '#FF7C0A',
+      'Hunter':       '#AAD372',
+      'Mage':         '#3FC7EB',
+      'Paladin':      '#F48CBA',
+      'Priest':       '#ffffff',
+      'Rogue':        '#FFF468',
+      'Shaman':       '#0070DD',
+      'Warlock':      '#8788EE',
+      'Warrior':      '#C69B3A',
+    };
+
+    const ROLE_SVG = {
+      tank: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 6v6c0 5 3.6 9.7 8 10.9C16.4 21.7 20 17 20 12V6l-8-4z"/></svg>`,
+      healer: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`,
+      dps: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 2C10 2 7 4.46 6.2 7.73L4 8l2 4-2 4 2.2.27C7 19.54 10 22 13.5 22c4.14 0 7.5-3.36 7.5-7.5v-5C21 5.36 17.64 2 13.5 2zm.5 11h-2v2h-2v-2H8v-2h2V9h2v2h2v2z"/></svg>`,
+    };
+
+    const ROLE_LABEL = { tank: 'Tank', healer: 'Healer', dps: 'DPS' };
+
+    let data = JSON.parse(localStorage.getItem('tundra-alts') || '[]');
+    let currentSort = 'main';
+    let sortAsc = true;
+    let modalMode = 'member';
+
+    function save() {
+      localStorage.setItem('tundra-alts', JSON.stringify(data));
+    }
+
+    function getMainName(id) {
+      const m = data.find(d => d.id === id);
+      return m ? m.name : '—';
+    }
+
+    function classBadge(cls) {
+      const color = CLASS_COLORS[cls] || '#aaa';
+      return `<span class="class-badge" style="color:${color};border-color:${color}22;background:${color}11;">
+        <span class="class-icon" style="background:${color}33;border:1px solid ${color}55;"></span>
+        ${cls}
+      </span>`;
+    }
+
+    function roleBadge(role) {
+      if (!role) return '—';
+      return `<span class="role role--${role}">${ROLE_SVG[role]} ${ROLE_LABEL[role]}</span>`;
+    }
+
+    function renderRows() {
+      const mains = data.filter(d => !d.mainId);
+      const alts  = data.filter(d =>  d.mainId);
+
+      let rows = [];
+
+      if (currentSort === 'main') {
+        const sortedMains = [...mains].sort((a, b) => {
+          const cmp = a.name.localeCompare(b.name);
+          return sortAsc ? cmp : -cmp;
+        });
+        for (const m of sortedMains) {
+          rows.push({ ...m, _isMain: true });
+          const myAlts = alts.filter(a => a.mainId === m.id)
+            .sort((a, b) => a.name.localeCompare(b.name));
+          rows.push(...myAlts.map(a => ({ ...a, _isMain: false })));
+        }
+      } else {
+        const all = [...data].sort((a, b) => {
+          let va = a[currentSort === 'name' ? 'name' : currentSort] || '';
+          let vb = b[currentSort === 'name' ? 'name' : currentSort] || '';
+          const cmp = va.localeCompare(vb);
+          return sortAsc ? cmp : -cmp;
+        });
+        rows = all.map(r => ({ ...r, _isMain: !r.mainId }));
+      }
+
+      const tbody = document.getElementById('roster-body');
+      const empty = document.getElementById('empty-state');
+
+      if (rows.length === 0) {
+        tbody.innerHTML = '';
+        empty.style.display = '';
+        return;
+      }
+      empty.style.display = 'none';
+
+      tbody.innerHTML = rows.map(r => {
+        const isMain = r._isMain;
+        const altOf = r.mainId ? `<span class="alt-of"><span class="alt-arrow">↳</span>${getMainName(r.mainId)}</span>` : '';
+        return `<tr class="${isMain ? 'is-main' : 'is-alt'}">
+          <td>
+            <span class="char-name">${escHtml(r.name)}</span>
+            ${isMain ? '<span class="main-badge">Main</span>' : ''}
+          </td>
+          <td>${altOf || '<span style="color:var(--muted);font-style:italic;font-size:0.85rem;">—</span>'}</td>
+          <td>${classBadge(r.class)}</td>
+          <td style="color:var(--text-soft);font-size:0.9rem;">${escHtml(r.spec || '—')}</td>
+          <td>${roleBadge(r.role)}</td>
+          <td class="actions">
+            <button class="btn btn--sm btn--danger" onclick="deleteEntry('${r.id}')">Remove</button>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    function escHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function setSort(key) {
+      if (currentSort === key) {
+        sortAsc = !sortAsc;
+      } else {
+        currentSort = key;
+        sortAsc = true;
+      }
+      document.querySelectorAll('.sort-btn').forEach(b => {
+        const active = b.dataset.sort === key;
+        b.classList.toggle('active', active);
+        const arrow = b.querySelector('.arrow');
+        if (arrow) { b.removeChild(arrow); }
+        if (active) {
+          const sp = document.createElement('span');
+          sp.className = 'arrow';
+          sp.textContent = sortAsc ? ' ↑' : ' ↓';
+          b.appendChild(sp);
+        }
+      });
+      renderRows();
+    }
+
+    function openModal(mode) {
+      modalMode = mode;
+      document.getElementById('modal-title').textContent = mode === 'member' ? 'Add Member' : 'Add Alt';
+      document.getElementById('main-select-group').style.display = mode === 'alt' ? '' : 'none';
+
+      const sel = document.getElementById('main-select');
+      sel.innerHTML = '<option value="">— Select main —</option>';
+      const mains = data.filter(d => !d.mainId).sort((a,b) => a.name.localeCompare(b.name));
+      mains.forEach(m => {
+        const o = document.createElement('option');
+        o.value = m.id;
+        o.textContent = m.name;
+        sel.appendChild(o);
+      });
+
+      document.getElementById('char-name').value = '';
+      document.getElementById('char-class').value = '';
+      document.getElementById('char-spec').innerHTML = '<option value="">— Spec —</option>';
+      document.getElementById('char-role').value = '';
+      document.getElementById('modal').classList.add('open');
+      document.getElementById('char-name').focus();
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('open');
+    }
+
+    function closeModalOnBackdrop(e) {
+      if (e.target === document.getElementById('modal')) closeModal();
+    }
+
+    function updateSpecOptions() {
+      const cls = document.getElementById('char-class').value;
+      const specs = SPECS[cls] || [];
+      const sel = document.getElementById('char-spec');
+      sel.innerHTML = '<option value="">— Spec —</option>';
+      specs.forEach(s => {
+        const o = document.createElement('option');
+        o.value = s;
+        o.textContent = s;
+        sel.appendChild(o);
+      });
+    }
+
+    function submitForm(e) {
+      e.preventDefault();
+      const name  = document.getElementById('char-name').value.trim();
+      const cls   = document.getElementById('char-class').value;
+      const spec  = document.getElementById('char-spec').value;
+      const role  = document.getElementById('char-role').value;
+      const mainId = modalMode === 'alt' ? document.getElementById('main-select').value : null;
+
+      if (!name || !cls || !role) return;
+      if (modalMode === 'alt' && !mainId) return;
+
+      data.push({ id: crypto.randomUUID(), name, class: cls, spec, role, mainId: mainId || null });
+      save();
+      renderRows();
+      closeModal();
+    }
+
+    function deleteEntry(id) {
+      const entry = data.find(d => d.id === id);
+      if (!entry) return;
+      const isMain = !entry.mainId;
+      if (isMain) {
+        const altCount = data.filter(d => d.mainId === id).length;
+        const msg = altCount > 0
+          ? `Remove ${entry.name} and their ${altCount} alt${altCount > 1 ? 's' : ''}?`
+          : `Remove ${entry.name}?`;
+        if (!confirm(msg)) return;
+        data = data.filter(d => d.id !== id && d.mainId !== id);
+      } else {
+        if (!confirm(`Remove ${entry.name}?`)) return;
+        data = data.filter(d => d.id !== id);
+      }
+      save();
+      renderRows();
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+    document.getElementById('year').textContent = new Date().getFullYear();
+    renderRows();
+  </script>
+
+</body>
+</html>
