@@ -296,11 +296,21 @@
       border: 1px solid transparent;
       white-space: nowrap;
     }
-    .class-icon {
-      width: 16px;
-      height: 16px;
-      border-radius: 2px;
+    .spec-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.88rem;
+      color: var(--text-soft);
+      white-space: nowrap;
+    }
+    .wow-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 3px;
+      border: 1px solid rgba(255,255,255,0.15);
       flex-shrink: 0;
+      image-rendering: auto;
     }
 
     /* Role icons */
@@ -584,6 +594,74 @@
       'Warrior':      '#C69B3A',
     };
 
+    const WH = 'https://wow.zamimg.com/images/wow/icons/medium';
+
+    const CLASS_ICONS = {
+      'Death Knight': `${WH}/classicon_deathknight.jpg`,
+      'Druid':        `${WH}/classicon_druid.jpg`,
+      'Hunter':       `${WH}/classicon_hunter.jpg`,
+      'Mage':         `${WH}/classicon_mage.jpg`,
+      'Paladin':      `${WH}/classicon_paladin.jpg`,
+      'Priest':       `${WH}/classicon_priest.jpg`,
+      'Rogue':        `${WH}/classicon_rogue.jpg`,
+      'Shaman':       `${WH}/classicon_shaman.jpg`,
+      'Warlock':      `${WH}/classicon_warlock.jpg`,
+      'Warrior':      `${WH}/classicon_warrior.jpg`,
+    };
+
+    const SPEC_ICONS = {
+      // Death Knight
+      'Blood':          `${WH}/spell_deathknight_bloodpresence.jpg`,
+      'Frost':          `${WH}/spell_deathknight_frostpresence.jpg`,
+      'Unholy':         `${WH}/spell_deathknight_unholypresence.jpg`,
+      // Druid
+      'Balance':        `${WH}/spell_nature_starfall.jpg`,
+      'Feral':          `${WH}/ability_racial_bearform.jpg`,
+      'Restoration':    `${WH}/spell_nature_healingtouch.jpg`,
+      // Hunter
+      'Beast Mastery':  `${WH}/ability_hunter_beasttaming.jpg`,
+      'Marksmanship':   `${WH}/ability_marksmanship.jpg`,
+      'Survival':       `${WH}/ability_hunter_harrowingshothunter.jpg`,
+      // Mage
+      'Arcane':         `${WH}/spell_holy_magicalsentry.jpg`,
+      'Fire':           `${WH}/spell_fire_firebolt02.jpg`,
+      // Frost (shared key — DK takes priority, Mage uses same icon)
+      // Paladin
+      'Holy':           `${WH}/spell_holy_holybolt.jpg`,
+      'Protection':     `${WH}/spell_holy_devotionaura.jpg`,
+      'Retribution':    `${WH}/spell_holy_auraoflight.jpg`,
+      // Priest
+      'Discipline':     `${WH}/spell_holy_wordfortitude.jpg`,
+      'Shadow':         `${WH}/spell_shadow_shadowwordpain.jpg`,
+      // Rogue
+      'Assassination':  `${WH}/ability_rogue_eviscerate.jpg`,
+      'Combat':         `${WH}/ability_backstab.jpg`,
+      'Subtlety':       `${WH}/ability_stealth.jpg`,
+      // Shaman
+      'Elemental':      `${WH}/spell_nature_lightning.jpg`,
+      'Enhancement':    `${WH}/spell_nature_lightningshield.jpg`,
+      // Warlock
+      'Affliction':     `${WH}/spell_shadow_deathcoil.jpg`,
+      'Demonology':     `${WH}/spell_shadow_metamorphosis.jpg`,
+      'Destruction':    `${WH}/spell_shadow_rainoffire.jpg`,
+      // Warrior
+      'Arms':           `${WH}/ability_warrior_savageblow.jpg`,
+      'Fury':           `${WH}/ability_warrior_innerrage.jpg`,
+    };
+
+    function specIcon(cls, spec) {
+      if (!spec) return '';
+      // Frost is shared between DK and Mage — pick the right one
+      if (spec === 'Frost' && cls === 'Mage') return `${WH}/spell_frost_frostbolt02.jpg`;
+      // Restoration is shared between Druid and Shaman
+      if (spec === 'Restoration' && cls === 'Shaman') return `${WH}/spell_nature_magicimmunity.jpg`;
+      // Protection is shared between Paladin and Warrior
+      if (spec === 'Protection' && cls === 'Warrior') return `${WH}/ability_warrior_defensivestance.jpg`;
+      // Holy is shared between Paladin and Priest
+      if (spec === 'Holy' && cls === 'Priest') return `${WH}/spell_holy_guardianspirit.jpg`;
+      return SPEC_ICONS[spec] || '';
+    }
+
     const ROLE_SVG = {
       tank: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 6v6c0 5 3.6 9.7 8 10.9C16.4 21.7 20 17 20 12V6l-8-4z"/></svg>`,
       healer: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`,
@@ -621,9 +699,19 @@
 
     function classBadge(cls) {
       const color = CLASS_COLORS[cls] || '#aaa';
+      const icon  = CLASS_ICONS[cls] || '';
       return `<span class="class-badge" style="color:${color};border-color:${color}22;background:${color}11;">
-        <span class="class-icon" style="background:${color}33;border:1px solid ${color}55;"></span>
+        ${icon ? `<img class="wow-icon" src="${icon}" alt="${cls}" title="${cls}">` : ''}
         ${cls}
+      </span>`;
+    }
+
+    function specBadge(cls, spec) {
+      if (!spec) return '<span style="color:var(--muted);font-style:italic;font-size:0.85rem;">—</span>';
+      const icon = specIcon(cls, spec);
+      return `<span class="spec-badge">
+        ${icon ? `<img class="wow-icon" src="${icon}" alt="${spec}" title="${spec}">` : ''}
+        ${escHtml(spec)}
       </span>`;
     }
 
@@ -674,12 +762,12 @@
         const altOf = r.mainId ? `<span class="alt-of"><span class="alt-arrow">↳</span>${getMainName(r.mainId)}</span>` : '';
         return `<tr class="${isMain ? 'is-main' : 'is-alt'}">
           <td>
-            <span class="char-name">${escHtml(r.name)}</span>
+            <span class="char-name" style="color:${CLASS_COLORS[r.class] || 'var(--text)'};">${escHtml(r.name)}</span>
             ${isMain ? '<span class="main-badge">Main</span>' : ''}
           </td>
           <td>${altOf || '<span style="color:var(--muted);font-style:italic;font-size:0.85rem;">—</span>'}</td>
           <td>${classBadge(r.class)}</td>
-          <td style="color:var(--text-soft);font-size:0.9rem;">${escHtml(r.spec || '—')}</td>
+          <td>${specBadge(r.class, r.spec)}</td>
           <td>${roleBadge(r.role)}</td>
           <td class="actions">
             <button class="btn btn--sm btn--danger" onclick="deleteEntry('${r.id}')">Remove</button>
